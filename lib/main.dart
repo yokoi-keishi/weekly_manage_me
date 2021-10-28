@@ -19,7 +19,6 @@ import 'package:weekly_manage_me/screens/todo_screen.dart';
 
 import 'models/notification_manager.dart';
 import 'models/setting_manager.dart';
-import 'package:uuid/uuid.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -51,13 +50,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: HomeScreen.id,
-      routes: {
-        HomeScreen.id: (context) => HomeScreen(),
-        AddTaskScreen.id: (context) => AddTaskScreen(),
-        SettingScreen.id: (context) => SettingScreen(),
-        TodoScreen.id: (context) => TodoScreen(),
-      },
+      home: HomeScreen(),
     );
   }
 }
+
+// initialRoute: HomeScreen.id,
+// routes: {
+// HomeScreen.id: (context) => HomeScreen(),
+// AddTaskScreen.id: (context) => AddTaskScreen(),
+// SettingScreen.id: (context) => SettingScreen(),
+// TodoScreen.id: (context) => TodoScreen(),
+// },

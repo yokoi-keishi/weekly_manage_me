@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:weekly_manage_me/models/notification_manager.dart';
 import 'package:weekly_manage_me/screens/setting_screen.dart';
 import 'package:weekly_manage_me/widgets/home_widgets/date_picker_time_line.dart';
 
 import 'package:weekly_manage_me/widgets/home_widgets/home_main_screen.dart';
-import 'package:weekly_manage_me/widgets/home_widgets/home_bottom_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -22,8 +20,6 @@ import 'add_task_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   HomeScreen({Key? key}) : super(key: key);
-
-  static String id = 'HomeScreen';
 
   final DateManager dateManager = DateManager();
 
@@ -69,10 +65,10 @@ class HomeScreen extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.settings),
                         onPressed: () {
-                          final notificationManager = NotificationManager();
-                          notificationManager.setNotification();
-                          print('設定できたはず');
-                          // Navigator.pushNamed(context, SettingScreen.id);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SettingScreen()));
                         },
                       ),
                     ],

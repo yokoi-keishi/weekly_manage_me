@@ -3,27 +3,9 @@ import 'package:weekly_manage_me/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-enum SingingCharacter {
-  monday,
-  tuesday,
-  wednesday,
-  thursday,
-  friday,
-  saturday,
-  sunday
-}
-
 class DateManager extends ChangeNotifier {
   DateTime _selectedDate = DateTime.now();
-  SingingCharacter _character = SingingCharacter.tuesday;
-
   DateTime get selectedDate => _selectedDate;
-  SingingCharacter get character => _character;
-
-  void changeCharacter(SingingCharacter value) {
-    _character = value;
-    notifyListeners();
-  }
 
   void changeDate(DateTime date) {
     _selectedDate = date;

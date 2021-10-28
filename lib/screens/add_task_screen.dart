@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weekly_manage_me/main.dart';
+import 'package:weekly_manage_me/models/notification_manager.dart';
 import 'package:weekly_manage_me/models/task.dart';
 import 'package:weekly_manage_me/models/task_manager.dart';
 
@@ -9,8 +10,6 @@ import '../constants.dart';
 
 class AddTaskScreen extends ConsumerWidget {
   AddTaskScreen({Key? key}) : super(key: key);
-
-  static String id = 'AddTaskScreen';
 
   final TextEditingController textEditingController = TextEditingController();
 
@@ -28,7 +27,10 @@ class AddTaskScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -61,19 +63,6 @@ class AddTaskScreen extends ConsumerWidget {
               const SizedBox(height: 20),
               Row(children: weekSelection()),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Push通知の許可'),
-                  Switch(
-                    value: context.read(taskProvider).isPushed,
-                    onChanged: (value) {
-                      watch(taskProvider).changePush(value);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
               Material(
                 elevation: 6.0,
                 borderRadius: BorderRadius.circular(20),
@@ -91,6 +80,9 @@ class AddTaskScreen extends ConsumerWidget {
                     watch(taskProvider).clearWeekList();
                     Navigator.pop(context);
                     textEditingController.clear();
+                    // notification setting
+                    final notificationManager = NotificationManager();
+                    notificationManager.setNotification();
                   },
                 ),
               ),

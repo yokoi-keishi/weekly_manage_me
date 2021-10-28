@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weekly_manage_me/main.dart';
+import 'package:weekly_manage_me/models/notification_manager.dart';
 import 'package:weekly_manage_me/models/task.dart';
 import 'package:weekly_manage_me/models/task_manager.dart';
-
-import 'package:animate_do/animate_do.dart';
 
 class WeeklyCard extends ConsumerWidget {
   const WeeklyCard({Key? key, required this.taskNumber, required this.task})
@@ -25,13 +24,16 @@ class WeeklyCard extends ConsumerWidget {
         },
         onLongPress: () {
           taskManager.deleteTask(taskNumber);
+          // notification setting
+          final notificationManager = NotificationManager();
+          notificationManager.setNotification();
         },
         child: Card(
           elevation: 0.0,
           color: const Color(0x00000000),
           child: task.complete
-              ? _finishedCard('${task.id}')
-              : _unFinishedCard('${task.id}'),
+              ? _finishedCard(task.title)
+              : _unFinishedCard(task.title),
         ));
   }
 }
@@ -45,14 +47,11 @@ _finishedCard(String? title) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          'Clear',
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white),
-        ),
+        Text('clear'),
         Text(
           title ?? '',
-          style: const TextStyle(color: Colors.white70),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
         ),
       ],
     ),
@@ -65,19 +64,12 @@ _unFinishedCard(String? title) {
       color: Colors.white,
       borderRadius: BorderRadius.circular(10),
     ),
-    child: Stack(
-      alignment: AlignmentDirectional.center,
-      children: [
-        CircleAvatar(radius: 35, child: const Icon(Icons.cast)),
-        Positioned(
-          bottom: 0,
-          child: Text(
-            title ?? '',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
+    child: Center(
+      child: Text(
+        title ?? '',
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+      ),
     ),
   );
 }

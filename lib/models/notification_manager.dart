@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -10,6 +12,9 @@ import '../main.dart';
 
 class NotificationManager {
   final Box<Task> taskBox = Hive.box<Task>('task');
+
+  late AppLifecycleState _notification;
+  AppLifecycleState get notification => _notification;
 
   Future<void> init() async {
     final AndroidInitializationSettings initializationSettingsAndroid =
@@ -35,6 +40,9 @@ class NotificationManager {
   }
 
   void setNotification() async {
+    // notification all cancel
+    await flutterLocalNotificationsPlugin.cancelAll();
+
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('your channel id', 'your channel name',
             channelDescription: 'your channel description',
@@ -52,7 +60,7 @@ class NotificationManager {
       android: androidPlatformChannelSpecifics,
     );
 
-    var time = const Time(22, 34, 0);
+    var time = const Time(22, 43, 0);
 
     for (var task in taskBox.values) {
       var dateManager = DateManager();

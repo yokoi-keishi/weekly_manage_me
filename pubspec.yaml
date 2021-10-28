@@ -39,11 +39,8 @@ dependencies:
   path_provider: ^2.0.3
   flutter_riverpod: ^0.14.0+3
   date_picker_timeline: ^1.2.3
-  animate_do: ^2.0.0
-  convex_bottom_bar: ^3.0.0
-  modal_bottom_sheet: ^2.0.0
   flutter_local_notifications: ^9.0.0
-  uuid: ^3.0.5
+  flutter_picker: ^2.0.2
 
 dev_dependencies:
   flutter_test:
