@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:weekly_manage_me/constants.dart';
 import 'package:weekly_manage_me/main.dart';
 
 class SettingScreen extends ConsumerWidget {
@@ -13,7 +14,49 @@ class SettingScreen extends ConsumerWidget {
         elevation: 0,
       ),
       backgroundColor: watch(dateProvider).changeColor(),
-      body: Container(),
+      body: ListView(
+        children: [
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('notification'),
+              trailing: Switch(onChanged: (bool value) {}, value: true),
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.person),
+              title: Text('ユーザー名'),
+              trailing: TextButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('ユーザー名変更'),
+                              TextField(
+                                textAlign: TextAlign.center,
+                              ),
+                              Material(
+                                child: MaterialButton(
+                                  onPressed: () {},
+                                  child: Text('決定'),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      });
+                },
+                child: Text('変更'),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

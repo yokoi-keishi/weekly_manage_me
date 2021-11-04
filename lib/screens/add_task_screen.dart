@@ -44,7 +44,7 @@ class AddTaskScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '${watch(dateProvider).sendWeekly()}曜日のタスクを決めましょう',
+                '週間のタスクを決めましょう',
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),

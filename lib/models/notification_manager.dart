@@ -60,7 +60,7 @@ class NotificationManager {
       android: androidPlatformChannelSpecifics,
     );
 
-    var time = const Time(22, 43, 0);
+    var time = const Time(21, 56, 0);
 
     for (var task in taskBox.values) {
       var dateManager = DateManager();

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:weekly_manage_me/models/notification_manager.dart';
 import 'package:weekly_manage_me/screens/setting_screen.dart';
+import 'package:weekly_manage_me/screens/todo_screen.dart';
 import 'package:weekly_manage_me/widgets/home_widgets/date_picker_time_line.dart';
+import 'package:badges/badges.dart';
 
 import 'package:weekly_manage_me/widgets/home_widgets/home_main_screen.dart';
 
@@ -16,6 +18,8 @@ import 'package:weekly_manage_me/constants.dart';
 import 'package:weekly_manage_me/models/task.dart';
 import 'package:weekly_manage_me/models/date_manager.dart';
 
+import 'package:weekly_manage_me/models/todo.dart';
+
 import 'add_task_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -25,6 +29,14 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    List<int> badgeCount = watch(todoProvider)
+        .todoBox
+        .keys
+        .cast<int>()
+        .where((element) =>
+            watch(todoProvider).todoBox.get(element)!.complete == false)
+        .toList();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
@@ -70,6 +82,24 @@ class HomeScreen extends ConsumerWidget {
                               MaterialPageRoute(
                                   builder: (context) => SettingScreen()));
                         },
+                      ),
+                      Badge(
+                        position: BadgePosition.topEnd(top: -3, end: -3),
+                        badgeContent: badgeCount.length != 0
+                            ? Text(
+                                badgeCount.length.toString(),
+                                style: TextStyle(color: Colors.white),
+                              )
+                            : null,
+                        showBadge: badgeCount.length != 0 ? true : false,
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TodoScreen()));
+                            },
+                            icon: Icon(Icons.task)),
                       ),
                     ],
                   )
