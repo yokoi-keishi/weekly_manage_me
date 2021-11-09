@@ -22,9 +22,9 @@ class NotificationManager {
 
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
-      requestSoundPermission: false,
-      requestBadgePermission: false,
-      requestAlertPermission: false,
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
     );
 
     final InitializationSettings initializationSettings =
@@ -60,7 +60,7 @@ class NotificationManager {
       android: androidPlatformChannelSpecifics,
     );
 
-    var time = const Time(21, 56, 0);
+    var time = const Time(23, 01, 0);
 
     for (var task in taskBox.values) {
       var dateManager = DateManager();
@@ -76,15 +76,3 @@ class NotificationManager {
     }
   }
 }
-
-// print(tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)));
-
-// await flutterLocalNotificationsPlugin.zonedSchedule(
-//     12346,
-//     "通知",
-//     "これが表示されたということはスケジュール通知成功だよ",
-//     tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-//     platformChannelSpecifics,
-//     androidAllowWhileIdle: true,
-//     uiLocalNotificationDateInterpretation:
-//         UILocalNotificationDateInterpretation.absoluteTime);

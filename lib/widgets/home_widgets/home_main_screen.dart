@@ -21,7 +21,6 @@ class HomeMainScreen extends ConsumerWidget {
           builder: (context, Box<Task> tasks, _) {
             List<int>? keys;
 
-            // keys = tasks.keys.cast<int>().toList();
             keys = tasks.keys
                 .cast<int>()
                 .where((key) =>

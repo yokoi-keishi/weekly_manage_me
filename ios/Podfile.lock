@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_app_badger (0.0.1):
+    - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -7,12 +9,15 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_app_badger (from `.symlinks/plugins/flutter_app_badger/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_app_badger:
+    :path: ".symlinks/plugins/flutter_app_badger/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   path_provider:
@@ -20,6 +25,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_app_badger: 65de4d6f0c34a891df49e6cfb8a1c0496426fa68
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
 

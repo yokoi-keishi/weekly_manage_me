@@ -23,6 +23,10 @@ void main() async {
   Hive.registerAdapter(TodoAdapter());
   await Hive.openBox<Todo>('todo');
 
+  // reset task complete
+  var taskManager = TaskManager();
+  taskManager.resetCompleteTask();
+
   WidgetsFlutterBinding.ensureInitialized();
   NotificationManager().init();
 

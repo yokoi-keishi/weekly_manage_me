@@ -49,6 +49,25 @@ class TaskManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  // reset task complete
+  void resetCompleteTask() {
+    var numbers = taskBox.keys.cast<int>().toList();
+
+    for (var number in numbers) {
+      if (taskBox.get(number)!.weekly == DateTime.now().weekday) {
+        continue;
+      }
+      var task = taskBox.get(number);
+      resetTaskStatus(number, task!);
+    }
+  }
+
+  void resetTaskStatus(int taskNumber, Task task) async {
+    task.complete = false;
+    await taskBox.put(taskNumber, task);
+    notifyListeners();
+  }
+
   void changeTaskString(String value) {
     _taskString = value;
     notifyListeners();

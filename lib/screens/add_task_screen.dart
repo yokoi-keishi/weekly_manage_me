@@ -45,17 +45,15 @@ class AddTaskScreen extends ConsumerWidget {
             children: [
               Text(
                 '週間のタスクを決めましょう',
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Text(
-                '選択されている曜日を追加できます',
-                style: TextStyle(color: Colors.black54),
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: textEditingController,
-                decoration: kTextFieldDecoration.copyWith(hintText: '掃除する'),
+                decoration: kTextFieldDecoration.copyWith(hintText: '例：掃除する'),
                 onChanged: (value) {
                   watch(taskProvider).changeTaskString(value);
                 },
@@ -187,7 +185,7 @@ class WeeklyContainer extends ConsumerWidget {
           },
           child: Card(
             color: watch(taskProvider).sendWeeklyStatus(weeklyCount)
-                ? Colors.blue
+                ? Colors.lightBlue
                 : Colors.white,
             elevation: 6.0,
             child: Padding(

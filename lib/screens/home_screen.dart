@@ -6,6 +6,7 @@ import 'package:weekly_manage_me/screens/setting_screen.dart';
 import 'package:weekly_manage_me/screens/todo_screen.dart';
 import 'package:weekly_manage_me/widgets/home_widgets/date_picker_time_line.dart';
 import 'package:badges/badges.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 import 'package:weekly_manage_me/widgets/home_widgets/home_main_screen.dart';
 
@@ -36,6 +37,18 @@ class HomeScreen extends ConsumerWidget {
         .where((element) =>
             watch(todoProvider).todoBox.get(element)!.complete == false)
         .toList();
+
+    // icon badge
+    List<int> appIconBadgeCount = [];
+    appIconBadgeCount = watch(taskProvider)
+        .taskBox
+        .keys
+        .cast<int>()
+        .where((element) =>
+            watch(taskProvider).taskBox.get(element)!.weekly ==
+            DateTime.now().weekday)
+        .toList();
+    FlutterAppBadger.updateBadgeCount(appIconBadgeCount.length);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
