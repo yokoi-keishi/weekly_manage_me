@@ -30,6 +30,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    // todos count badge
     List<int> badgeCount = watch(todoProvider)
         .todoBox
         .keys

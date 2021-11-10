@@ -5,6 +5,7 @@ import 'package:weekly_manage_me/main.dart';
 import 'package:weekly_manage_me/models/notification_manager.dart';
 import 'package:weekly_manage_me/models/task.dart';
 import 'package:weekly_manage_me/models/task_manager.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class WeeklyCard extends ConsumerWidget {
   const WeeklyCard({Key? key, required this.taskNumber, required this.task})
@@ -16,10 +17,12 @@ class WeeklyCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final taskManager = TaskManager();
+    final player = AudioCache();
 
     return InkWell(
         onTap: () {
           if (watch(settingProvider).isTap) return;
+          task.complete ? null : player.play('crrect_answer.mp3');
           taskManager.taskStatusChange(taskNumber, task);
         },
         onLongPress: () {
