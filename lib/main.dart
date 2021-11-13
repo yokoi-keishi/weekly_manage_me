@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:weekly_manage_me/models/date_manager.dart';
-import 'package:weekly_manage_me/models/navigation_manager.dart';
 import 'package:weekly_manage_me/models/task.dart';
 import 'package:weekly_manage_me/models/task_manager.dart';
 import 'package:weekly_manage_me/models/todo.dart';
@@ -36,7 +35,6 @@ void main() async {
 final taskProvider = ChangeNotifierProvider((ref) => TaskManager());
 final todoProvider = ChangeNotifierProvider((ref) => TodoManager());
 final dateProvider = ChangeNotifierProvider((ref) => DateManager());
-final navigationProvider = ChangeNotifierProvider((ref) => NavigationManager());
 final settingProvider = ChangeNotifierProvider((ref) => SettingManager());
 
 class MyApp extends StatelessWidget {

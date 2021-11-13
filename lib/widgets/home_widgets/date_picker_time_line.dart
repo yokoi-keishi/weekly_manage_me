@@ -12,7 +12,6 @@ DatePicker datePickerTimeLine(BuildContext context, ScopedReader watch) {
     daysCount: 7,
     onDateChange: (date) {
       watch(dateProvider).changeDate(date);
-      print(context.read(dateProvider).selectedDate.weekday);
     },
   );
 }

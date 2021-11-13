@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weekly_manage_me/constants.dart';
 import 'package:weekly_manage_me/main.dart';
+import 'package:weekly_manage_me/models/setting_manager.dart';
 
 class SettingScreen extends ConsumerWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -20,7 +20,12 @@ class SettingScreen extends ConsumerWidget {
             child: ListTile(
               leading: Icon(Icons.notifications),
               title: Text('notification'),
-              trailing: Switch(onChanged: (bool value) {}, value: true),
+              trailing: Switch(
+                  onChanged: (bool value) {
+                    var settingManager = SettingManager();
+                    settingManager.changeNotificationStatus();
+                  },
+                  value: watch(settingProvider).isNotificationStatus),
             ),
           ),
           Card(

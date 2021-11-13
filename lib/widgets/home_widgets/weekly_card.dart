@@ -21,15 +21,17 @@ class WeeklyCard extends ConsumerWidget {
 
     return InkWell(
         onTap: () {
-          if (watch(settingProvider).isTap) return;
           task.complete ? null : player.play('crrect_answer.mp3');
           taskManager.taskStatusChange(taskNumber, task);
+          taskManager.allTaskStateCheck(context, task);
+          taskManager.iconBadgeUpdateAction();
         },
         onLongPress: () {
           taskManager.deleteTask(taskNumber);
           // notification setting
           final notificationManager = NotificationManager();
           notificationManager.setNotification();
+          taskManager.iconBadgeUpdateAction();
         },
         child: Card(
           elevation: 0.0,
@@ -42,18 +44,16 @@ class WeeklyCard extends ConsumerWidget {
 }
 
 _finishedCard(String? title) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Color(0xFF006666),
-      borderRadius: BorderRadius.circular(10),
-    ),
+  return Card(
+    color: Color(0xFF006666),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('clear'),
+        Text('clear', style: TextStyle(color: Colors.white70)),
         Text(
           title ?? '',
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white70),
           textAlign: TextAlign.center,
         ),
       ],
@@ -62,11 +62,8 @@ _finishedCard(String? title) {
 }
 
 _unFinishedCard(String? title) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
-    ),
+  return Card(
+    elevation: 10.0,
     child: Center(
       child: Text(
         title ?? '',

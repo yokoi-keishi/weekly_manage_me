@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weekly_manage_me/main.dart';
 import 'package:weekly_manage_me/models/notification_manager.dart';
@@ -25,6 +26,24 @@ class AddTaskScreen extends ConsumerWidget {
     return weekContainers;
   }
 
+  Map cards = {
+    0: {'title': '掃除をする', 'icon': const Icon(Icons.cleaning_services_outlined)},
+    1: {'title': 'ゴミ捨てをする', 'icon': const Icon(Icons.delete_sweep_outlined)},
+    2: {
+      'title': '洗濯をする',
+      'icon': const Icon(Icons.local_laundry_service_outlined)
+    },
+    3: {'title': '買い物をする', 'icon': const Icon(Icons.shopping_cart_outlined)},
+    4: {'title': '勉強をする', 'icon': const Icon(Icons.school_outlined)},
+    5: {'title': 'ヨガをする', 'icon': const Icon(Icons.self_improvement_outlined)},
+    6: {'title': 'ジムに行く', 'icon': const Icon(Icons.fitness_center_outlined)},
+  };
+
+  void supportTitleButtonMethod(String text, ScopedReader watch) {
+    textEditingController.text = text;
+    watch(taskProvider).changeTaskString(textEditingController.text);
+  }
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -36,131 +55,90 @@ class AddTaskScreen extends ConsumerWidget {
         elevation: 0,
       ),
       backgroundColor: watch(dateProvider).changeColor(),
-      body: SingleChildScrollView(
-        physics: const ScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(kPadding),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '週間のタスクを決めましょう',
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: textEditingController,
-                decoration: kTextFieldDecoration.copyWith(hintText: '例：掃除する'),
-                onChanged: (value) {
-                  watch(taskProvider).changeTaskString(value);
-                },
-              ),
-              const SizedBox(height: 20),
-              Row(children: weekSelection()),
-              const SizedBox(height: 20),
-              Material(
-                elevation: 6.0,
-                borderRadius: BorderRadius.circular(20),
-                child: MaterialButton(
-                  child: const Text('決定'),
-                  onPressed: () {
-                    if (context.read(taskProvider).taskString == null) return;
-                    final taskManager = TaskManager();
-                    for (int weekday in watch(taskProvider).selectedWeekList) {
-                      taskManager.addTask(Task(
-                          title: context.read(taskProvider).taskString!,
-                          weekly: weekday));
-                    }
-                    watch(taskProvider).changePush(false);
-                    watch(taskProvider).clearWeekList();
-                    Navigator.pop(context);
-                    textEditingController.clear();
-                    // notification setting
-                    final notificationManager = NotificationManager();
-                    notificationManager.setNotification();
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              Divider(
-                color: Colors.black54,
-              ),
-              const SizedBox(height: 20),
-              Text('例えば、、、'),
-              const SizedBox(height: 20),
-              Column(children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SupportTitleButton(
-                      textString: '🧹掃除をする',
-                      onPressed: () {
-                        textEditingController.text = '掃除をする';
-                        watch(taskProvider)
-                            .changeTaskString(textEditingController.text);
-                      },
-                    ),
-                    SupportTitleButton(
-                      textString: '🗑ゴミ捨てをする',
-                      onPressed: () {
-                        textEditingController.text = 'ゴミ捨てをする';
-                        watch(taskProvider)
-                            .changeTaskString(textEditingController.text);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SupportTitleButton(
-                      textString: '👕洗濯をする',
-                      onPressed: () {
-                        textEditingController.text = '洗濯をする';
-                        watch(taskProvider)
-                            .changeTaskString(textEditingController.text);
-                      },
-                    ),
-                    SupportTitleButton(
-                      textString: '🍚買い物をする',
-                      onPressed: () {
-                        textEditingController.text = '買い物をする';
-                        watch(taskProvider)
-                            .changeTaskString(textEditingController.text);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SupportTitleButton(
-                      textString: '✏️勉強をする',
-                      onPressed: () {
-                        textEditingController.text = '勉強をする';
-                        watch(taskProvider)
-                            .changeTaskString(textEditingController.text);
-                      },
-                    ),
-                    SupportTitleButton(
-                      textString: '👨‍💼仕事をする',
-                      onPressed: () {
-                        textEditingController.text = '仕事をする';
-                        watch(taskProvider)
-                            .changeTaskString(textEditingController.text);
-                      },
-                    ),
-                  ],
-                ),
-              ])
-            ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: kPadding),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(
+            '週間タスクを決めましょう',
+            style: const TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
           ),
-        ),
+          const SizedBox(height: 20),
+          TextField(
+            style: kSimpleTextStyle,
+            controller: textEditingController,
+            decoration: kTextFieldDecoration.copyWith(hintText: '例：掃除をする'),
+            onChanged: (value) {
+              watch(taskProvider).changeTaskString(value);
+            },
+          ),
+          const SizedBox(height: 20),
+          Row(children: weekSelection()),
+          const SizedBox(height: 20),
+          Material(
+            color: Colors.black45,
+            elevation: 6.0,
+            borderRadius: BorderRadius.circular(10),
+            child: MaterialButton(
+              minWidth: 250,
+              child: const Text(
+                '決定',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                if (context.read(taskProvider).taskString == null) {
+                  return;
+                }
+                final taskManager = TaskManager();
+                for (int weekday in watch(taskProvider).selectedWeekList) {
+                  taskManager.addTask(Task(
+                      title: context.read(taskProvider).taskString!,
+                      weekly: weekday));
+                }
+                watch(taskProvider).changePush(false);
+                watch(taskProvider).clearWeekList();
+                taskManager.iconBadgeUpdateAction();
+                Navigator.pop(context);
+                textEditingController.clear();
+                // notification setting
+                final notificationManager = NotificationManager();
+                notificationManager.setNotification();
+              },
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            padding: EdgeInsets.all(kPadding),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '例えば・・・',
+              style: kSimpleTextStyle.copyWith(fontSize: 16),
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: cards.length,
+                  itemBuilder: (context, index) {
+                    var card = cards[index];
+                    if (card != null) {
+                      return SupportTitleCard(
+                          icon: card['icon'] as Icon,
+                          onPressed: () {
+                            supportTitleButtonMethod(
+                                card['title'] as String, watch);
+                          },
+                          textString: card['title'] as String);
+                    } else {
+                      return Text('no view');
+                    }
+                  }),
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -178,10 +156,7 @@ class WeeklyContainer extends ConsumerWidget {
     return Expanded(
       child: InkWell(
           onTap: () {
-            print(weeklyCount);
             watch(taskProvider).selectWeeklyTask(weeklyCount);
-            print(context.read(taskProvider).sendWeeklyStatus(weeklyCount));
-            print(context.read(taskProvider).selectedWeekList);
           },
           child: Card(
             color: watch(taskProvider).sendWeeklyStatus(weeklyCount)
@@ -189,32 +164,45 @@ class WeeklyContainer extends ConsumerWidget {
                 : Colors.white,
             elevation: 6.0,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(child: Text(weeklyString)),
+              padding: const EdgeInsets.all(kPadding),
+              child: Center(
+                  child: Text(
+                weeklyString,
+                style: kSimpleTextStyle.copyWith(
+                    color: watch(taskProvider).sendWeeklyStatus(weeklyCount)
+                        ? Colors.white
+                        : Colors.black54),
+              )),
             ),
           )),
     );
   }
 }
 
-class SupportTitleButton extends StatelessWidget {
-  const SupportTitleButton({
+class SupportTitleCard extends StatelessWidget {
+  const SupportTitleCard({
     Key? key,
-    required this.textString,
+    required this.icon,
     required this.onPressed,
+    required this.textString,
   }) : super(key: key);
 
+  final Icon icon;
   final String textString;
   final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 6.0,
-      borderRadius: BorderRadius.circular(20),
-      child: MaterialButton(
-        child: Text(textString),
-        onPressed: onPressed,
+    return InkWell(
+      onTap: onPressed,
+      child: Card(
+        child: ListTile(
+          leading: icon,
+          title: Text(
+            textString,
+            style: kSimpleTextStyle,
+          ),
+        ),
       ),
     );
   }

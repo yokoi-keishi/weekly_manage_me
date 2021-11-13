@@ -10,6 +10,9 @@ const Color thursdayColor = Color(0xffFFAEBC);
 const Color fridayColor = Color(0xffA0E7E5);
 const Color saturdayColor = Color(0xffB4F8C8);
 
+const TextStyle kSimpleTextStyle =
+    TextStyle(fontWeight: FontWeight.bold, color: Colors.black54);
+
 const kTextFieldDecoration = InputDecoration(
   hintStyle: TextStyle(color: Colors.grey),
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),

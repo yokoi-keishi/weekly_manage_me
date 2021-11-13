@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:weekly_manage_me/models/task.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 class TaskManager extends ChangeNotifier {
   final Box<Task> taskBox = Hive.box<Task>('task');
@@ -29,6 +32,18 @@ class TaskManager extends ChangeNotifier {
   bool _isSaturdayTapped = false;
   bool get isSaturdayTapped => _isSaturdayTapped;
 
+  void iconBadgeUpdateAction() {
+    // icon badge
+    List<int> appIconBadgeCount = [];
+    appIconBadgeCount = taskBox.keys
+        .cast<int>()
+        .where((element) =>
+            taskBox.get(element)!.weekly == DateTime.now().weekday &&
+            taskBox.get(element)!.complete == false)
+        .toList();
+    FlutterAppBadger.updateBadgeCount(appIconBadgeCount.length);
+  }
+
   Task? getTask(int index) {
     return taskBox.getAt(index);
   }
@@ -47,6 +62,30 @@ class TaskManager extends ChangeNotifier {
     task.toToggle();
     await taskBox.put(taskNumber, task);
     notifyListeners();
+  }
+
+  void allTaskStateCheck(BuildContext context, Task task) {
+    var todayTaskList = taskBox.keys.cast<int>().where(
+        (element) => taskBox.get(element)!.weekly == DateTime.now().weekday);
+    var completedTaskList = taskBox.keys.cast<int>().where((element) =>
+        taskBox.get(element)!.complete == true &&
+        taskBox.get(element)!.weekly == DateTime.now().weekday);
+
+    print('todayTaskCount: $todayTaskList');
+    print('completedTaskCount: $completedTaskList');
+
+    if (todayTaskList.length == completedTaskList.length) {
+      if (task.weekly == DateTime.now().weekday) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.SUCCES,
+          animType: AnimType.SCALE,
+          title: '🎉Congratulations🎉',
+          desc: '明日もアプリでタスク管理しましょう♪',
+          btnOkOnPress: () {},
+        ).show();
+      }
+    }
   }
 
   // reset task complete

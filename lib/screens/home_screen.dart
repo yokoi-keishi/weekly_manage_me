@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:weekly_manage_me/models/notification_manager.dart';
+import 'package:weekly_manage_me/models/task_manager.dart';
+import 'package:weekly_manage_me/models/todo_manager.dart';
 import 'package:weekly_manage_me/screens/setting_screen.dart';
 import 'package:weekly_manage_me/screens/todo_screen.dart';
 import 'package:weekly_manage_me/widgets/home_widgets/date_picker_time_line.dart';
 import 'package:badges/badges.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 import 'package:weekly_manage_me/widgets/home_widgets/home_main_screen.dart';
 
@@ -31,25 +32,9 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     // todos count badge
-    List<int> badgeCount = watch(todoProvider)
-        .todoBox
-        .keys
-        .cast<int>()
-        .where((element) =>
-            watch(todoProvider).todoBox.get(element)!.complete == false)
-        .toList();
-
-    // icon badge
-    List<int> appIconBadgeCount = [];
-    appIconBadgeCount = watch(taskProvider)
-        .taskBox
-        .keys
-        .cast<int>()
-        .where((element) =>
-            watch(taskProvider).taskBox.get(element)!.weekly ==
-            DateTime.now().weekday)
-        .toList();
-    FlutterAppBadger.updateBadgeCount(appIconBadgeCount.length);
+    var todoManager = TodoManager();
+    var taskManager = TaskManager();
+    taskManager.iconBadgeUpdateAction();
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -75,9 +60,12 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Hello, Keishi',
+                        'Memorun',
                         style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Pacifico',
+                            color: Colors.black),
                       ),
                       Text(
                         '${watch(dateProvider).sendWeekly()}曜日のタスク',
@@ -88,24 +76,25 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SettingScreen()));
-                        },
-                      ),
+                      // IconButton(
+                      //   icon: const Icon(Icons.settings),
+                      //   onPressed: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //             builder: (context) => SettingScreen()));
+                      //   },
+                      // ),
                       Badge(
                         position: BadgePosition.topEnd(top: -3, end: -3),
-                        badgeContent: badgeCount.length != 0
+                        badgeContent: todoManager.badgeCount().isNotEmpty
                             ? Text(
-                                badgeCount.length.toString(),
+                                todoManager.badgeCount().length.toString(),
                                 style: TextStyle(color: Colors.white),
                               )
                             : null,
-                        showBadge: badgeCount.length != 0 ? true : false,
+                        showBadge:
+                            todoManager.badgeCount().isNotEmpty ? true : false,
                         child: IconButton(
                             onPressed: () {
                               Navigator.push(
