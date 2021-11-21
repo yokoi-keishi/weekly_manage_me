@@ -49,11 +49,11 @@ _finishedCard(String? title) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('clear', style: TextStyle(color: Colors.white70)),
+        Text('clear', style: TextStyle(color: Colors.white70, fontSize: 18)),
         Text(
           title ?? '',
           style: const TextStyle(
-              fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white70),
+              fontWeight: FontWeight.bold, color: Colors.white70),
           textAlign: TextAlign.center,
         ),
       ],

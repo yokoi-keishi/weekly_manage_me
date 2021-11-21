@@ -16,6 +16,7 @@ class TodoScreen extends ConsumerWidget {
     TextEditingController textEditingController = TextEditingController();
     Box<Todo> todoBox = Hive.box<Todo>('todo');
     var todoManager = TodoManager();
+    String? todoTitleString;
 
     return Scaffold(
         appBar: AppBar(
@@ -29,153 +30,183 @@ class TodoScreen extends ConsumerWidget {
             showDialog(
                 context: context,
                 builder: (context) => Dialog(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('新しいTodo'),
-                          TextField(
-                            controller: textEditingController,
-                            onChanged: (value) {
-                              textEditingController.text = value;
-                            },
-                          ),
-                          MaterialButton(onPressed: () {
-                            if (textEditingController.text != "") {
-                              todoManager.addTodo(
-                                  Todo(title: textEditingController.text));
-                              textEditingController.clear();
-                              Navigator.pop(context);
-                            }
-                          })
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(kPadding * 2),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '新しいTodoが追加できます',
+                              style: kSimpleTextStyle.copyWith(fontSize: 18),
+                            ),
+                            const SizedBox(height: 20),
+                            TextField(
+                              textDirection: TextDirection.ltr,
+                              autofocus: true,
+                              controller: textEditingController,
+                              onChanged: (value) {
+                                todoTitleString = value;
+                              },
+                              decoration: kTextFieldDecoration.copyWith(
+                                  hintText: '例：航空券を予約する'),
+                            ),
+                            const SizedBox(height: 20),
+                            Material(
+                              color: Colors.black45,
+                              elevation: 6.0,
+                              borderRadius: BorderRadius.circular(10),
+                              child: MaterialButton(
+                                  minWidth: 150,
+                                  child: const Text(
+                                    '決定',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  onPressed: () {
+                                    if (todoTitleString != "") {
+                                      todoManager.addTodo(
+                                          Todo(title: todoTitleString!));
+                                      textEditingController.clear();
+                                      Navigator.pop(context);
+                                    }
+                                  }),
+                            ),
+                          ],
+                        ),
                       ),
                     ));
           },
         ),
         backgroundColor: watch(dateProvider).changeColor(),
-        body: Column(
-          children: [
-            Expanded(
-              flex: 3,
-              child: SingleChildScrollView(
-                child: ValueListenableBuilder(
-                  valueListenable: todoBox.listenable(),
-                  builder: (context, Box<Todo> todos, _) {
-                    List<int>? keys;
+        body: Padding(
+          padding: const EdgeInsets.all(kPadding),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: SingleChildScrollView(
+                  child: ValueListenableBuilder(
+                    valueListenable: todoBox.listenable(),
+                    builder: (context, Box<Todo> todos, _) {
+                      List<int>? ongoings;
+                      ongoings = todos.keys
+                          .cast<int>()
+                          .where((element) =>
+                              todos.get(element)!.complete == false)
+                          .toList();
 
-                    keys = todos.keys
-                        .cast<int>()
-                        .where(
-                            (element) => todos.get(element)!.complete == false)
-                        .toList();
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: kPadding),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ongoing',
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                          ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: keys.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                int key = keys![index];
-                                Todo? todo = todos.get(key);
-                                return Card(
-                                  child: ListTile(
-                                    leading: Checkbox(
-                                      value: todo!.complete,
-                                      onChanged: (bool? value) {
-                                        watch(todoProvider)
-                                            .changeTodoState(key, todo);
-                                      },
-                                    ),
-                                    title: Text(
-                                      todo.title,
-                                      style: todo.complete
-                                          ? TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough)
-                                          : TextStyle(),
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kPadding * 2),
-              child: Divider(
-                color: Colors.black,
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: ValueListenableBuilder(
-                  valueListenable: todoBox.listenable(),
-                  builder: (context, Box<Todo> todos, _) {
-                    List<int>? keys;
-
-                    keys = todos.keys
-                        .cast<int>()
-                        .where(
-                            (element) => todos.get(element)!.complete == true)
-                        .toList();
-
-                    return Padding(
+                      return Padding(
                         padding:
                             const EdgeInsets.symmetric(horizontal: kPadding),
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'completed',
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ),
-                              ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: keys.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    int key = keys![index];
-                                    Todo? todo = todos.get(key);
-                                    return Card(
-                                      child: ListTile(
-                                        leading: Checkbox(
-                                          value: todo!.complete,
-                                          onChanged: (bool? value) {
-                                            watch(todoProvider)
-                                                .changeTodoState(key, todo);
-                                          },
-                                        ),
-                                        title: Text(
-                                          todo.title,
-                                          style: todo.complete
-                                              ? TextStyle(
-                                                  decoration: TextDecoration
-                                                      .lineThrough)
-                                              : TextStyle(),
-                                        ),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'やること',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: ongoings.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  int key = ongoings![index];
+                                  Todo? todo = todos.get(key);
+                                  return Card(
+                                    child: ListTile(
+                                      leading: Checkbox(
+                                        value: todo!.complete,
+                                        onChanged: (bool? value) {
+                                          watch(todoProvider)
+                                              .changeTodoState(key, todo);
+                                        },
                                       ),
-                                    );
-                                  })
-                            ]));
-                  },
+                                      title: Text(
+                                        todo.title,
+                                        style: todo.complete
+                                            ? TextStyle(
+                                                decoration:
+                                                    TextDecoration.lineThrough)
+                                            : TextStyle(),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(kPadding),
+                child: Divider(
+                  color: Colors.black,
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: ValueListenableBuilder(
+                    valueListenable: todoBox.listenable(),
+                    builder: (context, Box<Todo> todos, _) {
+                      List<int>? completeKeys;
+
+                      completeKeys = todos.keys
+                          .cast<int>()
+                          .where(
+                              (element) => todos.get(element)!.complete == true)
+                          .toList();
+
+                      return Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: kPadding),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '完了',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: completeKeys.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      int key = completeKeys![index];
+                                      Todo? todo = todos.get(key);
+                                      return Card(
+                                        child: ListTile(
+                                          leading: Checkbox(
+                                            value: todo!.complete,
+                                            onChanged: (bool? value) {
+                                              watch(todoProvider)
+                                                  .changeTodoState(key, todo);
+                                            },
+                                          ),
+                                          title: Text(
+                                            todo.title,
+                                            style: todo.complete
+                                                ? TextStyle(
+                                                    decoration: TextDecoration
+                                                        .lineThrough)
+                                                : TextStyle(),
+                                          ),
+                                        ),
+                                      );
+                                    })
+                              ]));
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ));
   }
 }

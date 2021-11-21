@@ -6,13 +6,6 @@ import 'todo.dart';
 class TodoManager extends ChangeNotifier {
   final Box<Todo> todoBox = Hive.box<Todo>('todo');
 
-  List<int> badgeCount() {
-    return todoBox.keys
-        .cast<int>()
-        .where((element) => todoBox.get(element)!.complete == false)
-        .toList();
-  }
-
   Todo? getTodo(int index) {
     return todoBox.getAt(index);
   }
@@ -33,12 +26,18 @@ class TodoManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<int> badgeCount() {
+    return todoBox.keys
+        .cast<int>()
+        .where((element) => todoBox.get(element)!.complete == false)
+        .toList();
+  }
+
   // void todoBadgeStatusChange() {
   //   _badgeCount = todoBox.keys
   //       .cast<int>()
   //       .where((element) => todoBox.get(element)!.complete == false)
   //       .toList();
-  //   print(_badgeCount.length);
   //   notifyListeners();
   // }
 }

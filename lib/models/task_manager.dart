@@ -10,8 +10,6 @@ class TaskManager extends ChangeNotifier {
   final Box<Task> taskBox = Hive.box<Task>('task');
   String? _taskString;
   String? get taskString => _taskString;
-  bool _isPushed = false;
-  bool get isPushed => _isPushed;
   DateTime _selectedTime = DateTime.now();
   DateTime get selectedTime => _selectedTime;
 
@@ -107,18 +105,8 @@ class TaskManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeTaskString(String value) {
-    _taskString = value;
-    notifyListeners();
-  }
-
   void changeDateToTime(DateTime time) {
     _selectedTime = time;
-    notifyListeners();
-  }
-
-  void changePush(bool value) {
-    _isPushed = value;
     notifyListeners();
   }
 

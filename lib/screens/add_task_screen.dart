@@ -10,10 +10,6 @@ import 'package:weekly_manage_me/models/task_manager.dart';
 import '../constants.dart';
 
 class AddTaskScreen extends ConsumerWidget {
-  AddTaskScreen({Key? key}) : super(key: key);
-
-  final TextEditingController textEditingController = TextEditingController();
-
   List<WeeklyContainer> weekSelection() {
     List<WeeklyContainer> weekContainers = [];
     weekContainers = week
@@ -37,16 +33,16 @@ class AddTaskScreen extends ConsumerWidget {
     4: {'title': '勉強をする', 'icon': const Icon(Icons.school_outlined)},
     5: {'title': 'ヨガをする', 'icon': const Icon(Icons.self_improvement_outlined)},
     6: {'title': 'ジムに行く', 'icon': const Icon(Icons.fitness_center_outlined)},
+    7: {'title': '野球をする', 'icon': const Icon(Icons.sports_baseball_outlined)},
+    8: {'title': 'サッカーをする', 'icon': const Icon(Icons.sports_soccer_outlined)},
+    9: {'title': 'バスケをする', 'icon': const Icon(Icons.sports_basketball_outlined)}
   };
-
-  void supportTitleButtonMethod(String text, ScopedReader watch) {
-    textEditingController.text = text;
-    watch(taskProvider).changeTaskString(textEditingController.text);
-  }
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    String? taskString;
+    TextEditingController textEditingController = TextEditingController();
 
     return Scaffold(
       key: _scaffoldKey,
@@ -69,7 +65,7 @@ class AddTaskScreen extends ConsumerWidget {
             controller: textEditingController,
             decoration: kTextFieldDecoration.copyWith(hintText: '例：掃除をする'),
             onChanged: (value) {
-              watch(taskProvider).changeTaskString(value);
+              taskString = value;
             },
           ),
           const SizedBox(height: 20),
@@ -87,23 +83,22 @@ class AddTaskScreen extends ConsumerWidget {
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               onPressed: () {
-                if (context.read(taskProvider).taskString == null) {
+                if (textEditingController.text == "") {
                   return;
+                } else {
+                  final taskManager = TaskManager();
+                  for (int weekday in watch(taskProvider).selectedWeekList) {
+                    taskManager
+                        .addTask(Task(title: taskString!, weekly: weekday));
+                  }
+                  watch(taskProvider).clearWeekList();
+                  taskManager.iconBadgeUpdateAction();
+                  Navigator.pop(context);
+                  textEditingController.clear();
+                  // notification setting
+                  final notificationManager = NotificationManager();
+                  notificationManager.setNotification();
                 }
-                final taskManager = TaskManager();
-                for (int weekday in watch(taskProvider).selectedWeekList) {
-                  taskManager.addTask(Task(
-                      title: context.read(taskProvider).taskString!,
-                      weekly: weekday));
-                }
-                watch(taskProvider).changePush(false);
-                watch(taskProvider).clearWeekList();
-                taskManager.iconBadgeUpdateAction();
-                Navigator.pop(context);
-                textEditingController.clear();
-                // notification setting
-                final notificationManager = NotificationManager();
-                notificationManager.setNotification();
               },
             ),
           ),
@@ -128,8 +123,9 @@ class AddTaskScreen extends ConsumerWidget {
                       return SupportTitleCard(
                           icon: card['icon'] as Icon,
                           onPressed: () {
-                            supportTitleButtonMethod(
-                                card['title'] as String, watch);
+                            taskString = card['title'] as String;
+                            textEditingController.text =
+                                card['title'] as String;
                           },
                           textString: card['title'] as String);
                     } else {
